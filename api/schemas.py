@@ -17,7 +17,7 @@ class Product(BaseModel):
     price: float
     image: Optional[HttpUrl] = None
     url: HttpUrl
-
+    
 
 class ProductResponse(Product):
     id: int
