@@ -22,7 +22,7 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
 
-    favorites = relationship(
+    products = relationship(
         "Product", secondary=favorites, back_populates="users")
 
 
@@ -34,11 +34,6 @@ class Product(Base):
     price = Column(Float)
     image = Column(String, nullable=True)
     url = Column(String, unique=True)
-    last_modified = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
 
     users = relationship("User", secondary=favorites,
-                         back_populates="favorites")
-
-
-
+                         back_populates="products")

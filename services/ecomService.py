@@ -1,3 +1,4 @@
+from typing import List
 from bs4 import BeautifulSoup
 import requests
 from . import pickaboo, gadstyle
@@ -9,7 +10,7 @@ ecoms = [
 ]
 
 
-def getProduct(url):
+def getProduct(url) -> dict:
     url = url.replace(' ', '')
     # if(url.find(pickabooDomain) > 0):
     #     return pickaboo(url)
@@ -19,7 +20,7 @@ def getProduct(url):
     return None
 
 
-def searchProduct(query):
+def searchProduct(query) ->List[dict]:
     products = []
     for ecom in ecoms:
         products.extend(ecom[2](query))

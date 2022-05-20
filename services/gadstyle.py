@@ -3,7 +3,6 @@ import bs4
 import requests
 
 
-
 domain = 'gadstyle.com'
 
 
@@ -12,11 +11,14 @@ def getProduct(url) -> dict:
     try:
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
+        if soup is None:
+            return None
         try:
             title = soup.find(
                 'div', class_="summary-inner").find('h1').get_text().strip()
         except:
             title = ''
+            return None
         try:
             pricestr = soup.find('p', class_="price").find(
                 'ins').get_text().strip()[1:]
@@ -31,7 +33,7 @@ def getProduct(url) -> dict:
     except:
         print(' ***error gadstyle***')
         return None
-    return {'Title': title, 'Price': price, 'image': image, 'URL': url}
+    return {'title': title, 'price': price, 'image': image, 'url': url}
 
 
 def getProductTile(product: bs4.element.Tag):
@@ -53,7 +55,7 @@ def getProductTile(product: bs4.element.Tag):
         image = product.find('img')['src']
     except:
         image = None
-    return {'Title': title, 'Price': price, 'image': image, 'URL': producturl}
+    return {'title': title, 'price': price, 'image': image, 'url': producturl}
 
 
 def searchProduct(query) -> list:
@@ -63,12 +65,15 @@ def searchProduct(query) -> list:
     # print(searchQuery)
     url = 'https://www.gadstyle.com/?post_type=product&s=' + searchQuery
     # print(url)
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    products = []
-    for productTile in soup.find_all('div', class_="product-wrapper"):
-        product = getProductTile(productTile)
-        if product:
-            products.append(product)
-    return products
-
+    try:
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        products = []
+        for productTile in soup.find_all('div', class_="product-wrapper"):
+            product = getProductTile(productTile)
+            if product:
+                products.append(product)
+        return products
+    except:
+        print(' ***error search gadstyle***')
+        return None
